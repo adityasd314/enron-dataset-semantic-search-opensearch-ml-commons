@@ -1,0 +1,10 @@
+numpy
+pandas
+python-dateutil
+opensearch-py
+tqdm
+python-dotenv
+sentence-transformers
+seaborn
+matplotlib
+# google-colab # Only needed if running data_cleaning.ipynb in Google Colab environment
