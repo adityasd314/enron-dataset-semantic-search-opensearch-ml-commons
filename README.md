@@ -218,7 +218,11 @@ curl -X PUT "https://localhost:9200/_ingest/pipeline/text-embedding-pipeline"\
        "processors": [
          {
            "text_embedding": {
+<<<<<<< HEAD
              "model_id": "your_model_id_here",   <--- YOUR DEPLOYED MODEL ID
+=======
+             "model_id": "your_model_id_here",  # <--- YOUR DEPLOYED MODEL ID
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
              "field_map": {
                "subject": "subject_embedding",
                "body": "body_embedding"

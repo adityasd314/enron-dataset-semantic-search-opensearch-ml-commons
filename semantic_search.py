@@ -1,6 +1,9 @@
 import argparse
 import json
+<<<<<<< HEAD
 import re
+=======
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
 from opensearchpy import OpenSearch, RequestsHttpConnection
 from sentence_transformers import SentenceTransformer
 import os
@@ -8,11 +11,15 @@ import dotenv
 
 # Load environment variables from .env file
 dotenv.load_dotenv()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
 # --- Configuration ---
 OPENSEARCH_HOST = os.getenv('OPENSEARCH_HOST', 'localhost')
 OPENSEARCH_PORT = os.getenv('OPENSEARCH_PORT', 9200)
 OPENSEARCH_USER = os.getenv('OPENSEARCH_USER', 'admin')
+<<<<<<< HEAD
 OPENSEARCH_PASSWORD = os.getenv('OPENSEARCH_PASSWORD', '')  # set Environment variable or set second argument as password
 INDEX_NAME = os.getenv('INDEX_NAME', 'my-email-data')  # The OpenSearch index name you created
 EMBEDDING_MODEL_NAME = os.getenv('EMBEDDING_MODEL_NAME', 'all-MiniLM-L6-v2')  # Added missing variable
@@ -20,6 +27,12 @@ EMBEDDINGS_DIMENSION = 384
 combined_output_file = "enron_emails_combined.json"
 output_folder = "json_batches"
 model = SentenceTransformer(EMBEDDING_MODEL_NAME)  # only for converting the query into a embedding
+=======
+OPENSEARCH_PASSWORD = os.getenv('OPENSEARCH_PASSWORD', '') # set Environment variable or set second argument as password
+INDEX_NAME = os.getenv('INDEX_NAME', 'my-email-data')  # The OpenSearch index name you created
+EMBEDDINGS_DIMENSION = 384
+model = SentenceTransformer(EMBEDDING_MODEL_NAME) # only for converting the query into a embedding
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
 
 # --- OpenSearch Client Setup ---
 client = OpenSearch(
@@ -48,6 +61,7 @@ def load_json_data(file_path):
                 print(f"Error decoding JSON: {e}")
     return data
 
+<<<<<<< HEAD
 def extract_email_addresses(query_text):
     """Extract email addresses from query text and determine if they are from/to filters."""
     # Email regex pattern
@@ -108,6 +122,8 @@ def clean_query_text(query_text):
     cleaned_text = ' '.join(cleaned_text.split())
     return cleaned_text.strip()
 
+=======
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
 def generate_query_embedding(query_text):
     """Generates an embedding for the search query using the local model."""
     if not query_text:
@@ -115,6 +131,7 @@ def generate_query_embedding(query_text):
     embeddings = model.encode([query_text])
     return embeddings[0].tolist()
 
+<<<<<<< HEAD
 def build_email_filters(email_info):
     """Build OpenSearch filters for email addresses using substring matching."""
     filters = []
@@ -171,6 +188,20 @@ def perform_knn_search(query_embedding, target_field=None, k=5, email_filters=No
     if target_field:
         # Search specific field
         knn_query = {
+=======
+def perform_knn_search(query_embedding, target_field, k=5):
+    """
+    Performs a k-NN search in OpenSearch.
+
+    Args:
+        query_embedding (list): The embedding vector of the search query.
+        target_field (str): The name of the knn_vector field to search against (e.g., 'subject_embedding', 'body_embedding').
+        k (int): The number of nearest neighbors to retrieve.
+    """
+    search_body = {
+        "size": k,
+        "query": {
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
             "knn": {
                 target_field: {
                     "vector": query_embedding,
@@ -178,6 +209,7 @@ def perform_knn_search(query_embedding, target_field=None, k=5, email_filters=No
                 }
             }
         }
+<<<<<<< HEAD
         print(f"\nSearching for query in '{target_field}'...")
     else:
         # Search both fields using bool should query
@@ -227,6 +259,11 @@ def perform_knn_search(query_embedding, target_field=None, k=5, email_filters=No
             "query": knn_query
         }
     
+=======
+    }
+
+    print(f"\nSearching for query in '{target_field}'...")
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
     try:
         response = client.search(
             index=INDEX_NAME,
@@ -239,24 +276,38 @@ def perform_knn_search(query_embedding, target_field=None, k=5, email_filters=No
 
 def print_search_results(response):
     """Prints the search results in a readable format."""
+<<<<<<< HEAD
     if(not os.path.exists(combined_output_file)):
     	os.system(f"cat {output_folder}/*.json > {combined_output_file}")
     data_json = load_json_data(combined_output_file)
 
+=======
+    data_json = load_json_data("enron_emails_sample.json")
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
     if response and response['hits']['hits']:
         print(f"Found {response['hits']['total']['value']} hits:\n")
         for i, hit in enumerate(response['hits']['hits']):
             uid = hit['_source'].get('uid')
+<<<<<<< HEAD
             subject = data_json[uid].get('subject') if uid in data_json else hit['_source'].get('subject', 'N/A')
             body = data_json[uid].get('body') if uid in data_json else hit['_source'].get('body', 'N/A')
+=======
+            subject = data_json[uid].get('subject')
+            body = data_json[uid].get('body')
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
             print(f"--- Result {i+1} ---")
             print(f"  Score: {hit['_score']:.4f}")
             print(f"  UID: {uid}")
             print(f"  Subject: {subject}")
             print(f"  From: {hit['_source'].get('from')}")
+<<<<<<< HEAD
             print(f"  To: {hit['_source'].get('to')}")
             print(f"  Body (partial): {str(body)[:200]}...")  # Print only part of body
             print("-" * 50)
+=======
+            print(f"  Body (partial): {body[:200]}...")  # Print only part of body
+            print("-" * 20)
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
     else:
         print("No results found.")
 
@@ -265,14 +316,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Semantic Search using OpenSearch and Sentence Transformers.")
     parser.add_argument("query", type=str, help="The search query text.")
     parser.add_argument(
+<<<<<<< HEAD
         "--field", type=str, choices=["subject_embedding", "body_embedding", "both"], default="both",
         help="The embedding field to search against (default: both)."
+=======
+        "--field", type=str, choices=["subject_embedding", "body_embedding"], default="subject_embedding",
+        help="The embedding field to search against (default: subject_embedding)."
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
     )
     parser.add_argument("--top_k", type=int, default=3, help="Number of top results to retrieve (default: 3).")
 
     args = parser.parse_args()
 
     query_text = args.query
+<<<<<<< HEAD
     target_field = args.field if args.field != "both" else None
     top_k = args.top_k
 
@@ -326,3 +383,16 @@ if __name__ == "__main__":
         print_search_results(results)
     else:
         print("No valid query content found. Please provide either semantic search terms or email addresses.")
+=======
+    target_field = args.field
+    top_k = args.top_k
+
+    print(f"Loading embedding model: {EMBEDDING_MODEL_NAME}...")
+    query_embedding = generate_query_embedding(query_text)
+    if query_embedding is None:
+        print("Could not generate embedding for query. Exiting.")
+        exit()
+
+    results = perform_knn_search(query_embedding, target_field, k=top_k)
+    print_search_results(results)
+>>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
