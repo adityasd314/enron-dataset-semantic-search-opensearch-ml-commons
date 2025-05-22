@@ -3,6 +3,8 @@ Enron Dataset Semantic Search with OpenSearch ML Commons
 
 This project demonstrates how to build a semantic search solution for the Enron email dataset using OpenSearch and its Machine Learning (ML) Commons plugin for generating vector embeddings.
 
+If you want to view the search query results, refer to the [results.md](./results.md) file.
+
 Link to Enron Dataset: [Kaggle Enron Email Dataset](https://www.kaggle.com/datasets/wcukierski/enron-email-dataset/ "null")
 
 1\. Data Preparation
@@ -22,6 +24,7 @@ The initial Enron dataset typically requires cleaning and formatting for ingesti
 - CSV to JSON Conversion:
 
   The make_batches script is used to convert the cleaned CSV file into a JSON format suitable for OpenSearch ingestion. This script can produce either a single merged JSON file or a folder containing multiple JSON files, where each line represents a single email as a JSON object.
+  I have already provided batches which can be ./json_batches so no need to run this.
 
   To run `make_batches`:
 
@@ -215,7 +218,7 @@ curl -X PUT "https://localhost:9200/_ingest/pipeline/text-embedding-pipeline"\
        "processors": [
          {
            "text_embedding": {
-             "model_id": "your_model_id_here",  # <--- YOUR DEPLOYED MODEL ID
+             "model_id": "your_model_id_here",   <--- YOUR DEPLOYED MODEL ID
              "field_map": {
                "subject": "subject_embedding",
                "body": "body_embedding"
@@ -411,7 +414,7 @@ python semantic_search.py --query "your search query text" --field "subject_embe
 **Example:**
 
 ```
-python semantic_search.py --query "conference call details" --field "body_embedding" --k 5
+python semantic_search.py "from ClickAtHome@enron.com to john.griffith@enron.com holiday  luxury shopping experience on the planet"
 
 ```
 
