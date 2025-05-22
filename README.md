@@ -218,11 +218,7 @@ curl -X PUT "https://localhost:9200/_ingest/pipeline/text-embedding-pipeline"\
        "processors": [
          {
            "text_embedding": {
-<<<<<<< HEAD
-             "model_id": "your_model_id_here",   <--- YOUR DEPLOYED MODEL ID
-=======
              "model_id": "your_model_id_here",  # <--- YOUR DEPLOYED MODEL ID
->>>>>>> 59e1a3fe277ed5945171a51e1e996ab8a0665140
              "field_map": {
                "subject": "subject_embedding",
                "body": "body_embedding"
@@ -411,7 +407,7 @@ Create a file named `semantic_search.py` and populate it with the Python code fo
 **How to Run Semantic Search:**
 
 ```
-python semantic_search.py --query "your search query text" --field "subject_embedding" --k 3
+python semantic_search.py --query "your search query text" --field "subject_embedding"
 
 ```
 
@@ -422,4 +418,3 @@ python semantic_search.py "from ClickAtHome@enron.com to john.griffith@enron.com
 
 ```
 
-If you omit the `--query` argument, the script will prompt you to enter the search query interactively. It will also prompt for the field to search if `--field` is not provided.
